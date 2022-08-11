@@ -142,6 +142,39 @@ export const GetUserExperience = (token) => {
     }
 }
 
+export const AddExperience = (token, data) => {
+    return (dispatch) => {
+        dispatch(GetUsersRequest())
+        axios({
+            method: "POST",
+            url: `${urlAPI}/experiences/`,
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            data: data
+        }).then((res) => {
+            dispatch(getResponse(res.data));
+            toast.success(`${res.data.message}`, {
+                position: "top-left",
+                autoClose: 2000,
+                hideProgressBar: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        }).catch((err) => {
+            toast.error(`${err.response.data.message}`, {
+                position: "top-left",
+                autoClose: 2000,
+                hideProgressBar: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        })
+    }
+}
+
 export const AddSkill = (token, data) => {
     return (dispatch) => {
         dispatch(GetUsersRequest())
@@ -173,6 +206,62 @@ export const AddSkill = (token, data) => {
                 progress: undefined,
             });
         })
+    }
+}
+
+export const RemoveExperience = (token, id) => {
+    return (dispatch) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                dispatch(GetUsersRequest())
+                axios({
+                    method: "DELETE",
+                    url: `${urlAPI}/experiences/${id}`,
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }).then((res) => {
+                    dispatch(getResponse(res.data));
+                    toast.success(`${res.data.message}`, {
+                        position: "top-left",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                }).catch((err) => {
+                    dispatch(GetUsersError(err.response.data));
+                    toast.error(`${err.response.data.message}`, {
+                        position: "top-left",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                })
+            }
+        }).catch(error => {
+            dispatch(GetUsersError(error.response.data));
+            toast.error(`${err.response.data.message}`, {
+                position: "top-left",
+                autoClose: 2000,
+                hideProgressBar: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        })
+
     }
 }
 

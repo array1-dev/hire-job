@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { BiEnvelope } from 'react-icons/bi'
 import { IoIosNotificationsOutline } from 'react-icons/io'
-// import { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import useVerify from "../lib/useVerify"
 import axios from "axios"
 import { toast } from 'react-toastify';
@@ -11,17 +11,29 @@ import useSWR from "swr"
 import { useEffect } from "react"
 
 const urlWeb = process.env.NEXT_PUBLIC_URL_IMAGE
+const urlAPI = process.env.NEXT_PUBLIC_URL_API
 const fetcher = url => axios.get(url).then(res => res.data).catch(err => err.response.data);
 
 
 const NavbarComponent = () => {
-    // const router = useRouter()
+    const router = useRouter()
     const { data, mutateData } = useVerify();
     const { data: token } = useSWR("/api/auth/token", fetcher)
-    const { data: notif } = useSWR(`/api/notification?token=${token?.token}`, fetcher, { refreshInterval: 5000 })
+    const { data: notif } = useSWR(`/api/notification?token=${token?.token}`, fetcher, { refreshInterval: 3000 })
     console.log(notif)
 
-
+    const handleClick = async () => {
+        await axios({
+            method: "PATCH",
+            url: `${urlAPI}/notification/`,
+            headers: {
+                Authorization: `Bearer ${token?.token}`
+            }
+        }).then(res => {
+            toast.success("Notification has been read", { position: "top-left", autoClose: 2000, hideProgressBar: false, pauseOnHover: true, draggable: true, progress: undefined });
+            router.push('/notification')
+        })
+    }
 
     const handleLogout = () => {
         axios({
@@ -56,7 +68,7 @@ const NavbarComponent = () => {
                         <div className="d-flex">
                             {data?.isLoggedIn ? (<>
                                 <div className="iconNavbar d-flex align-items-center justify-content-center mx-4">
-                                    <IoIosNotificationsOutline onClick={() => handleClick} className="fs-3 mx-3" />
+                                    <a type="button"><IoIosNotificationsOutline onClick={() => handleClick()} className="fs-3 mx-3" /></a>
                                     {notif?.unread < 1 || notif?.unread == undefined ? '' : (<>
                                         <span className="position-absolute top-0 translate-middle badge rounded-pill bg-danger notip">
                                             {notif?.unread}

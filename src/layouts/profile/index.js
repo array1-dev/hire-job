@@ -7,7 +7,7 @@ import { BsTrash } from 'react-icons/bs'
 import { useEffect, useState } from 'react'
 import useVerify from '../../lib/useVerify'
 import { useSelector, useDispatch } from 'react-redux'
-import { GetBySlug, GetUserExperience, GetPortfolio, GetSkills, UpdateUser, AddSkill, RemoveSkill } from '../../redux/actions/users'
+import { GetBySlug, GetUserExperience, GetPortfolio, GetSkills, UpdateUser, AddSkill, RemoveSkill, AddExperience, RemoveExperience } from '../../redux/actions/users'
 import axios from 'axios'
 import useSWR from 'swr'
 const urlImage = process.env.NEXT_PUBLIC_URL_IMAGE
@@ -33,6 +33,7 @@ const ProfileLayout = () => {
     // const user = GetUser?.results[0]?
     // console.log(GetUser)
     const [skill, setSkill] = useState({})
+    const [expe, setExpe] = useState({})
     const [formProfile, setFormProfile] = useState({
         userFullName: GetUser?.results[0]?.userFullName,
         address: GetUser?.results[0]?.address,
@@ -69,6 +70,15 @@ const ProfileLayout = () => {
 
     const deleteSkill = async (id) => {
         dispatch(RemoveSkill(token.token, id));
+    }
+
+    const deleteExpe = async (id) => {
+        dispatch(RemoveExperience(token.token, id));
+    }
+
+    const handleExpe = (e) => {
+        e.preventDefault()
+        dispatch(AddExperience(token.token, expe))
     }
 
     return (<>
@@ -191,36 +201,36 @@ const ProfileLayout = () => {
                             <h3 className={styles.nameDetail}>Pengalaman Kerja</h3>
                         </div>
                         <div className="card-body">
-                            <form encType='multipart/form-data'>
+                            <form onSubmit={(e) => handleExpe(e)}>
                                 <div className="row">
                                     <div className="col-6">
                                         <div className="form-group">
                                             <label>Nama perusahaan</label>
-                                            <input type="text" className="form-control" placeholder="Masukan nama perusahaan" required />
+                                            <input type="text" className="form-control" placeholder="Masukan nama perusahaan" onChange={(e) => setExpe(prevData => ({ ...prevData, experiencePlace: e.target.value }))} required />
                                         </div>
                                     </div>
                                     <div className="col-6">
                                         <div className="form-group">
                                             <label>Posisi</label>
-                                            <input type="text" className="form-control" placeholder="web developer" required />
+                                            <input type="text" className="form-control" placeholder="web developer" onChange={(e) => setExpe(prevData => ({ ...prevData, experienceName: e.target.value }))} required />
                                         </div>
                                     </div>
                                     <div className="col-6">
                                         <div className="form-group">
                                             <label>Tanggal masuk</label>
-                                            <input type="date" className="form-control" required />
+                                            <input type="date" className="form-control" onChange={(e) => setExpe(prevData => ({ ...prevData, experienceIn: e.target.value }))} required />
                                         </div>
                                     </div>
                                     <div className="col-6">
                                         <div className="form-group">
                                             <label>Tanggal keluar</label>
-                                            <input type="date" className="form-control" required />
+                                            <input type="date" className="form-control" onChange={(e) => setExpe(prevData => ({ ...prevData, experienceOut: e.target.value }))} required />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="form-group">
                                     <label>Deskripsi singkat</label>
-                                    <textarea className="form-control" rows="3" placeholder="Masukan deskripsi singkat pekerjaan" required></textarea>
+                                    <textarea className="form-control" rows="3" placeholder="Masukan deskripsi singkat pekerjaan" onChange={(e) => setExpe(prevData => ({ ...prevData, experienceDescription: e.target.value }))} required></textarea>
                                 </div>
                                 <div className="form-group text-end my-3">
                                     <button className="btn btn-secondary w-100 btn-secondary-mobile">Simpan</button>
@@ -237,8 +247,8 @@ const ProfileLayout = () => {
                                 <tbody>
                                     {!GetExperience.length ? 'no data' : GetExperience?.map((item, index) => (
                                         <tr key={index}>
-                                            <td>{item.experienceName}</td>
-                                            <td><a type='button'><FiEdit2 /></a>{' '}<a type='button'><BsTrash /></a></td>
+                                            <td>{item.experiencePlace}</td>
+                                            <td><a type='button'><FiEdit2 /></a>{' '}<a type='button' onClick={() => deleteExpe(item.experienceId)}><BsTrash /></a></td>
                                         </tr>
                                     ))}
 
