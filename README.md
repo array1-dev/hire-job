@@ -101,9 +101,8 @@ yarn start
 
 <!-- Contributors -->
 ## Contributors
-
+- Fullstack [M Sandi Maulana Y (PM)](https://github.com/muhammadsandi12)
 - Fullstack [Dhani Setiaji](https://github.com/dhanisetiaji)
 - BackEnd [Ade Ryzki](https://github.com/ade-ryzki)
-- BackEnd [Gyga Maulana](https://github.com/GygaMaulana)
-- BackEnd [M Sandi Maulana Y PM](https://github.com/muhammadsandi12)
+- Fullstack [Gyga Maulana](https://github.com/GygaMaulana)
 - BackEnd [Santi Purwaningsih](https://github.com/santipn)
